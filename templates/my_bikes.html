@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}My Bikes{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Bikes</h2>
+        <a href="{{ url_for('add_bike') }}" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add New Bike
+        </a>
+    </div>
+
+    {% if bikes %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for bike in bikes %}
+        <div class="col">
+            <div class="card h-100">
+                {% if bike.image_url_1 %}
+                <img src="../static/{{ bike.image_url_1 }}" 
+                     class="card-img-top" alt="{{ bike.name }}" style="height: 200px; object-fit: cover;">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ bike.name }}</h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-bicycle me-2"></i>{{ bike.model }} ({{ bike.year }})
+                        </small>
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-tag me-2"></i>
+                            {% if bike.listing_type == 'rent' %}
+                                For Rent: ₹{{ "%.2f"|format(bike.price_per_day) }}/day
+                            {% else %}
+                                For Sale: ₹{{ "%.2f"|format(bike.sale_price) }}
+                            {% endif %}
+                        </small>
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            <i class="fas fa-check-circle me-2"></i>Status: 
+                            {% if bike.is_available %}
+                                <span class="text-success">Available</span>
+                            {% else %}
+                                <span class="text-danger">Not Available</span>
+                            {% endif %}
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="btn-group w-100">
+                        <a href="{{ url_for('view_bike', bike_id=bike.id) }}" class="btn btn-outline-primary">
+                            <i class="fas fa-eye me-2"></i>View
+                        </a>
+                        <a href="{{ url_for('edit_bike', bike_id=bike.id) }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-edit me-2"></i>Edit
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>You haven't listed any bikes yet. 
+        <a href="{{ url_for('add_bike') }}" class="alert-link">Add your first bike!</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block styles %}
+<style>
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
